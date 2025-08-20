@@ -60,7 +60,8 @@ class WeatherService:
                 response = await client.get(
                     f"{self.base_url}/weather/getWeather",
                     params={
-                        "data.city": "Sivas"
+                        "lang": "tr",
+                        "city": "sivas"
                     },
                     headers={
                         "Authorization": f"apikey {self.api_token}",
