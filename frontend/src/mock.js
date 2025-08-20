@@ -1,38 +1,4 @@
 // Mock data for LEGO Spike Weather Station Demo
-export const mockWeatherData = {
-  temperature: {
-    value: 23.5,
-    unit: "°C",
-    trend: "stable",
-    icon: "thermometer"
-  },
-  windSpeed: {
-    value: 8.2,
-    unit: "m/s",
-    trend: "increasing",
-    icon: "wind"
-  },
-  precipitation: {
-    value: 2.3,
-    unit: "mm",
-    trend: "decreasing",
-    icon: "cloud-rain"
-  },
-  pressure: {
-    value: 1013.2,
-    unit: "hPa",
-    trend: "stable",
-    icon: "gauge"
-  },
-  windDirection: {
-    value: "NE",
-    degrees: 45,
-    unit: "°",
-    trend: "stable",
-    icon: "compass"
-  }
-};
-
 export const mockProjectStats = {
   sensorsActive: 5,
   dataPoints: 1247,
@@ -43,7 +9,7 @@ export const mockProjectStats = {
 export const mockFeatures = [
   {
     title: "Gerçek Zamanlı Veri",
-    description: "LEGO Spike ile anlık hava durumu verilerini matriks ekranında görüntüleyin",
+    description: "LEGO Spike ile Sivas'ın anlık hava durumu verilerini matriks ekranında görüntüleyin",
     icon: "activity"
   },
   {
