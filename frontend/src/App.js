@@ -10,25 +10,44 @@ import { mockProjectStats, mockFeatures } from "./mock";
 import { Cpu, Zap, Clock, Database, AlertCircle } from "lucide-react";
 import axios from "axios";
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
 function App() {
-  const [weatherData, setWeatherData] = useState(mockWeatherData);
+  const [weatherData, setWeatherData] = useState(null);
   const [stats, setStats] = useState(mockProjectStats);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  const fetchWeatherData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await axios.get(`${API}/weather/sivas`);
+      setWeatherData(response.data);
+    } catch (err) {
+      console.error('Weather API error:', err);
+      setError('Hava durumu verileri alınamadı');
+      // Fallback mock data
+      setWeatherData({
+        temperature: { value: 23.5, unit: "°C", trend: "stable", icon: "thermometer" },
+        windSpeed: { value: 8.2, unit: "m/s", trend: "increasing", icon: "wind" },
+        precipitation: { value: 2.3, unit: "mm", trend: "decreasing", icon: "cloud-rain" },
+        pressure: { value: 1013.2, unit: "hPa", trend: "stable", icon: "gauge" },
+        windDirection: { value: "NE", degrees: 45, unit: "°", trend: "stable", icon: "compass" },
+        location: "Sivas, Türkiye",
+        lastUpdate: new Date().toISOString()
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
   
   useEffect(() => {
-    // Simulate real-time data updates
-    const interval = setInterval(() => {
-      setWeatherData(prev => ({
-        ...prev,
-        temperature: {
-          ...prev.temperature,
-          value: (Math.random() * 10 + 18).toFixed(1)
-        },
-        windSpeed: {
-          ...prev.windSpeed,
-          value: (Math.random() * 15 + 5).toFixed(1)
-        }
-      }));
-    }, 3000);
+    fetchWeatherData();
+    
+    // Her 5 dakikada bir güncelle
+    const interval = setInterval(fetchWeatherData, 5 * 60 * 1000);
     
     return () => clearInterval(interval);
   }, []);
