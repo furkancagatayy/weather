@@ -105,7 +105,7 @@ function App() {
               ) : weatherData ? (
                 <>
                   <div className="grid grid-cols-2 gap-4">
-                    <WeatherCard data={weatherData.temperature} title="Sıcaklık" />
+                    <WeatherCard data={weatherData.temperature} title="Hissedilen Sıcaklık" />
                     <WeatherCard data={weatherData.windSpeed} title="Rüzgar Hızı" />
                     <WeatherCard data={weatherData.precipitation} title="Yağış" />
                     <WeatherCard data={weatherData.pressure} title="Basınç" />
