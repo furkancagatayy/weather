@@ -97,13 +97,33 @@ function App() {
           
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
-              <div className="grid grid-cols-2 gap-4">
-                <WeatherCard data={weatherData.temperature} title="Sıcaklık" />
-                <WeatherCard data={weatherData.windSpeed} title="Rüzgar Hızı" />
-                <WeatherCard data={weatherData.precipitation} title="Yağış" />
-                <WeatherCard data={weatherData.pressure} title="Basınç" />
-              </div>
-              <WeatherCard data={weatherData.windDirection} title="Rüzgar Yönü" />
+              {loading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                  <p className="text-gray-600">Sivas hava durumu veriler yükleniyor...</p>
+                </div>
+              ) : weatherData ? (
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <WeatherCard data={weatherData.temperature} title="Sıcaklık" />
+                    <WeatherCard data={weatherData.windSpeed} title="Rüzgar Hızı" />
+                    <WeatherCard data={weatherData.precipitation} title="Yağış" />
+                    <WeatherCard data={weatherData.pressure} title="Basınç" />
+                  </div>
+                  <WeatherCard data={weatherData.windDirection} title="Rüzgar Yönü" />
+                  <div className="text-sm text-gray-500 text-center">
+                    <Clock className="h-4 w-4 inline mr-1" />
+                    Son güncelleme: {new Date(weatherData.lastUpdate).toLocaleTimeString('tr-TR')}
+                    <br />
+                    📍 {weatherData.location}
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-8 text-red-600">
+                  <AlertCircle className="h-12 w-12 mx-auto mb-4" />
+                  <p>Hava durumu verileri yüklenemedi</p>
+                </div>
+              )}
             </div>
             
             <div className="flex justify-center">
