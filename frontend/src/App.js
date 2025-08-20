@@ -6,8 +6,9 @@ import { WeatherMatrix } from "./components/WeatherMatrix";
 import { Button } from "./components/ui/button";
 import { Card, CardContent } from "./components/ui/card";
 import { Badge } from "./components/ui/badge";
-import { mockWeatherData, mockProjectStats, mockFeatures } from "./mock";
-import { Cpu, Zap, Clock, Database } from "lucide-react";
+import { mockProjectStats, mockFeatures } from "./mock";
+import { Cpu, Zap, Clock, Database, AlertCircle } from "lucide-react";
+import axios from "axios";
 
 function App() {
   const [weatherData, setWeatherData] = useState(mockWeatherData);
