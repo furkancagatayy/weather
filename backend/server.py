@@ -1,15 +1,14 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 from pathlib import Path
-from pydantic import BaseModel, Field
 from typing import List
-import uuid
 from datetime import datetime
-
+from models import WeatherReading, WeatherReadingCreate, WeatherResponse
+from weather_service import WeatherService
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -20,37 +19,67 @@ client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
 # Create the main app without a prefix
-app = FastAPI()
+app = FastAPI(title="LEGO Spike Weather Station API")
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
+# Weather service instance
+weather_service = WeatherService()
 
-# Define Models
-class StatusCheck(BaseModel):
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    client_name: str
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+# Weather endpoints
+@api_router.get("/weather/sivas", response_model=WeatherResponse)
+async def get_sivas_weather():
+    """Sivas için gerçek zamanlı hava durumu verilerini döndürür"""
+    try:
+        weather_data = await weather_service.get_sivas_weather()
+        
+        # Veritabanına kaydet
+        weather_reading = WeatherReadingCreate(
+            location="Sivas",
+            temperature=weather_data.temperature.value,
+            wind_speed=weather_data.windSpeed.value,
+            precipitation=weather_data.precipitation.value,
+            pressure=weather_data.pressure.value,
+            wind_direction=weather_data.windDirection.degrees,
+            wind_direction_text=weather_data.windDirection.value
+        )
+        
+        reading_dict = weather_reading.dict()
+        weather_obj = WeatherReading(**reading_dict)
+        await db.weather_readings.insert_one(weather_obj.dict())
+        
+        return weather_data
+        
+    except Exception as e:
+        logger.error(f"Weather endpoint error: {str(e)}")
+        raise HTTPException(status_code=503, detail=f"Weather service error: {str(e)}")
 
-class StatusCheckCreate(BaseModel):
-    client_name: str
+@api_router.get("/weather/history", response_model=List[WeatherReading])
+async def get_weather_history(limit: int = 24):
+    """Son hava durumu kayıtlarını döndürür"""
+    try:
+        readings = await db.weather_readings.find().sort("timestamp", -1).limit(limit).to_list(limit)
+        return [WeatherReading(**reading) for reading in readings]
+    except Exception as e:
+        logger.error(f"Weather history error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Database error")
 
-# Add your routes to the router instead of directly to app
+# Basic endpoints
 @api_router.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "LEGO Spike Weather Station API", "status": "active"}
 
-@api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_dict = input.dict()
-    status_obj = StatusCheck(**status_dict)
-    _ = await db.status_checks.insert_one(status_obj.dict())
-    return status_obj
-
-@api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    status_checks = await db.status_checks.find().to_list(1000)
-    return [StatusCheck(**status_check) for status_check in status_checks]
+@api_router.get("/health")
+async def health_check():
+    return {
+        "status": "healthy",
+        "timestamp": datetime.utcnow().isoformat(),
+        "services": {
+            "database": "connected",
+            "weather_api": "available"
+        }
+    }
 
 # Include the router in the main app
 app.include_router(api_router)
@@ -58,7 +87,7 @@ app.include_router(api_router)
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -70,6 +99,11 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+@app.on_event("startup")
+async def startup_event():
+    logger.info("LEGO Spike Weather Station API starting up...")
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
+    logger.info("Database connection closed")
