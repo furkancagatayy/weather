@@ -85,7 +85,7 @@ function App() {
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               LEGO Spike set kullanarak geliştirdiğimiz bu projede, Sivas'ın gerçek zamanlı hava durumu verileri 8x8 LED matriks ekranda görüntüleniyor. 
-              Sıcaklık, rüzgar hızı, yağış miktarı, hava basıncı ve rüzgar yönü sürekli izleniyor.
+              Hissedilen sıcaklık, rüzgar hızı, yağış miktarı, hava basıncı ve rüzgar yönü sürekli izleniyor.
             </p>
             {error && (
               <div className="mt-4 flex items-center justify-center gap-2 text-orange-600 bg-orange-50 px-4 py-2 rounded-lg max-w-md mx-auto">
