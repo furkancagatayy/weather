@@ -14,7 +14,7 @@ export const mockFeatures = [
   },
   {
     title: "5 Farklı Sensör",
-    description: "Sıcaklık, rüzgar hızı, yağış, basınç ve rüzgar yönü ölçümü",
+    description: "Hissedilen sıcaklık, rüzgar hızı, yağış, basınç ve rüzgar yönü ölçümü",
     icon: "sensors"
   },
   {
