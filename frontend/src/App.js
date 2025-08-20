@@ -193,8 +193,8 @@ function App() {
             Robotik ve Meteoroloji Birleşiyor
           </h3>
           <p className="text-xl text-blue-100 mb-8 leading-relaxed">
-            LEGO Spike ile geliştirdiğimiz bu hava istasyonu, eğitim ve teknoloji arasında köprü kuruyor. 
-            Gerçek zamanlı veriler, görsel gösterim ve interaktif öğrenme deneyimi.
+            LEGO Spike ile geliştirdiğimiz bu hava istasyonu, Sivas'ın gerçek zamanlı hava durumu verilerini görüntüleyerek eğitim ve teknoloji arasında köprü kuruyor. 
+            Gerçek veriler, görsel gösterim ve interaktif öğrenme deneyimi sunar.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 transition-all transform hover:scale-105">
