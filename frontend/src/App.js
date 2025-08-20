@@ -81,12 +81,18 @@ function App() {
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
               LEGO Spike ile
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600"> Hava Durumu Takibi</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600"> Sivas Hava Durumu</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              LEGO Spike set kullanarak geliştirdiğimiz bu projede, gerçek zamanlı hava durumu verileri 8x8 LED matriks ekranda görüntüleniyor. 
+              LEGO Spike set kullanarak geliştirdiğimiz bu projede, Sivas'ın gerçek zamanlı hava durumu verileri 8x8 LED matriks ekranda görüntüleniyor. 
               Sıcaklık, rüzgar hızı, yağış miktarı, hava basıncı ve rüzgar yönü sürekli izleniyor.
             </p>
+            {error && (
+              <div className="mt-4 flex items-center justify-center gap-2 text-orange-600 bg-orange-50 px-4 py-2 rounded-lg max-w-md mx-auto">
+                <AlertCircle className="h-4 w-4" />
+                <span className="text-sm">{error} - Mock veriler gösteriliyor</span>
+              </div>
+            )}
           </div>
           
           <div className="grid lg:grid-cols-2 gap-12 items-center">
